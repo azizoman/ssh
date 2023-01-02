@@ -1,0 +1,103 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Keynote</title>
+
+#ARP Basics
+When we connect to another machine on our local network, we usually use its hostname, fully qualified domain name, or IP address. 
+
+#Before a packet can be sent from our Kali machine to the Windows XP target, Kali must map the IP address of the XP target machine to
+ the Media Access Control (MAC) address of the network interface card (NIC) so Kali knows where on the network to send the packet
+--------------------------------------------------------------------------------------------------------------------------------------------
+ARP Cache Poisoning
+
+# When it sends the next packet, our machine will first look to its ARP cache for an entry for 192.168.100.110. If it finds one, it will use 
+that entry as the address of the target rather than sending another ARP broadcast.
+#(ARP cache entries are flushed out regularly because network topology may change at any time.) 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+IP forwarding
+#we need to turn on IP forwarding to tell our Kali machine to forward any extraneous packets it receives to their proper destination.
+#The setting for IP forwarding on Kali is in 
+root@kali:~# echo 1 >/proc/sys/net/ipv4/ip_forward.
+--------------------------------------------------------------------------------------------------------------------------------------------
+About ARP poisioning
+#The first step is to enable IP forwarding; this enables traffic forwarding so traffic is redirected through the attacker's system. To carry out this attack, we carry out the following
+
+command:
+#echo 1 > /proc/sys/net/ipv4/ip_forward
+
+View the value set for IP forwarding; this will return a value 1. If it does not, repeat the preceding step: #cat /proc/sys/net/ipv4/ip_forward
+The output will be : 1
+#sysctl -p
+Note that the value of 1 here means that we are enabling IP forwarding. 
+If we want to turn off this feature, we can run the same command with a 0 instead.
+--------------------------------------------------------------------------------------------------------------------------------------------
+ARP Cache Poisoning with Arpspoof
+
+To use Arpspoof, we tell it which network interface to use, the target of our ARP cache poisoning attack, and the IP address we would like to masquerade as. 
+
+(If you leave out the target, you’ll poison the entire network.) 
+
+For our example, to fool the Linux target into thinking we are the Windows XP machine, set the -i option as eth0 to specify the interface,
+ the -t option as 192.168.20.11 to specify the target as the Linux box, and 192.168.20.10 as the Windows XP machine 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+command
+root@kali:~# arpspoof -i eth0 -t 192.168.20.11 192.168.20.10
+
+
+To capture the other side of the conversation, we need to fool the Windows XP machine into sending traffic intended for the Linux target to the Kali machine
+ as well. Start another instance of Arpspoof, and this time set the target as the Windows XP machine and the recipient as the Linux machine
+
+root@kali:~# arpspoof -i eth0 -t 192.168.20.10 192.168.20.11
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+result
+Once you start ARP cache poisoning, check your Linux target’s ARP cache again. Notice that the MAC address associated with the Windows XP target has changed to 70:56:81:b2:f0:53. 
+The Linux target should send all traffic intended for the Windows XP target to the Kali machine
+--------------------------------------------------------------------------------------------------------------------------------------------
+Using ARP Cache Poisoning to Impersonate the Default Gateway
+use ARP cache poisoning to impersonate the default gateway on a network and access traffic entering and leaving the network, including traffic destined for the Internet. 
+Stop the Arpspoof processes you have running, and try tricking the Linux target into routing all traffic to the gateway through the Kali machine by impersonating the default gateway
+
+root@kali:~# arpspoof -i eth0 -t 192.168.20.11 192.168.20.1
+root@kali:~# arpspoof -i eth0 -t 192.168.20.1 192.168.20.11
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+About DNS
+To reach another system on the Internet or local network, our machine needs to know the IP address to connect to. It is easy to remember the URL www.gmail.com if we want to visit 
+our web mail account, but it’s difficult to remember a bunch of IP addresses, which may even change regularly. DNS resolution translates the human-readable domain name into an 
+IP address.
+--------------------------------------------------------------------------------------------------------------------------------------------
+DNS Cache Poisoning
+In addition to ARP cache poisoning, we can also poison Domain Name Service (DNS) cache entries (mappings from domain names to IP addresses) to route traffic intended for another website to one we control. 
+Just as ARP resolves IP to MAC addresses to properly route traffic, DNS maps (or resolves) domain names such as www.gmail.com to IP addresses.
+--------------------------------------------------------------------------------------------------------------------------------------------
+Getting Started
+Now make sure the Apache server is running with the command service apache2 start.
+root@kali:~# service apache2 start
+
+Before we use a DNS cache poisoning tool, we need to create a file that specifies which DNS names we would like to spoof and where to send traffic.
+
+For example, let’s tell any system that runs a DNS resolution for www.gmail.com that that domain’s IP address is our Kali machine by adding the entry
+ 192.168.20.9 www.gmail.com to a new file called hosts.txt
+
+ --------------------------------------------------------------------------------------------------------------------------------------------
+ Create a file Hosts.txt
+ root@kali:~# cat hosts.txt
+192.168.20.9 www.gmail.com
+
+Touch hosts.txt
+echo 10.154.0.2 www.sct.edu.om > hosts.txt
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Using Dnsspoof
+Now we can start sending DNS cache poisoning attempts using the Dnssoof DNS spoofing tool
+root@kali:~# dnsspoof -i eth0 -f hosts.txt
+dnsspoof: listening on eth0 [udp dst port 53 and not src 192.168.20.9]
+192.168.20.11 > 75.75.75.75.53: 46559+ A? www.gmail.com
+
+Once Dnsspoof is running, when we run the nslookup command from our Linux target, the IP address returned should be our Kali machine’s
+
+--------------------------------------------------------------------------------------------------------------------------------------------

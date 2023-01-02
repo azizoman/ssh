@@ -1,0 +1,68 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Keynote</title>
+
+The default username and password for the router is admin: admin. The default credentials vary from device to device, but it’s common on penetration tests to 
+find routing equipment that still uses the default credentials
+
+root@kali:~# iwconfig
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Scan for Access Points
+we can scan for nearby access points. The command iwlist wlan0 scan will scan for nearby access points using the wlan0 interface
+
+root@kali:~# iwlist wlan0 scan
+--------------------------------------------------------------------------------------------------------------------------------------------
+Update Monitor mode
+Monitor mode allows us to see additional wireless traffic on top of the traffic intended for our wireless card. We’ll use the Airmon-ng script, part of the 
+Aircrack-ng wireless assessment suite, to put the Alfa card into monitor mode. First, make sure that no running processes will interfere with monitor mode by entering airmon-ng check
+
+root@kali:~# airmon-ng check
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Killing running process
+Airmon found two running processes that could interfere. Depending on your wireless card and its drivers, you may or may not run into any trouble if you don’t kill off these programs.
+
+root@kali:~# airmon-ng check kill
+--------------------------------------------------------------------------------------------------------------------------------------------
+airmon-ng start wlan0
+Enter airmon-ng start wlan0 to switch the wireless interface into monitor mode
+root@kali:~# airmon-ng start wlan0
+--------------------------------------------------------------------------------------------------------------------------------------------
+Capturing Packets
+With our interface in monitor mode, let’s see what data we can gather using Airodump-ng from the Aircrack-ng suite. Airodump-ng is used to capture and save wireless packets
+
+root@kali:~# airodump-ng mon0 --channel 6
+--------------------------------------------------------------------------------------------------------------------------------------------
+Open Wireless 
+Open wireless networks are a real disaster from a security perspective because anyone within antenna range of the access point can connect to that network.
+
+the wireless packets traveling through an open network are not encrypted, and anyone listening can see any data in plaintext
+
+FTP traffic on an open wireless network is completely unencrypted, including login information, and we don’t even need to use ARP or DNS cache poisoning to capture the packets. 
+Any wireless card in monitor mode will be able to see the unencrypted traffic. 
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+WEP – Security weakness
+An attacker to recover a key or alter legitimate packets. In fact, every WEP key is recoverable by an attacker armed with enough cipher texts encrypted with the same shared key
+
+We can use the Aircrack-ng suite to recover the shared key from a wireless network secured with WE
+
+root@kali:~# airodump-ng -w book mon0 --channel 6
+--------------------------------------------------------------------------------------------------------------------------------------------
+Wireless cracking
+There are multiple ways to crack WEP keys, including the fake authentication attack, fragmentation attack, and PTW attack.
+root@kali:~# airodump-ng -w book mon0 --channel 6
+--------------------------------------------------------------------------------------------------------------------------------------------
+Injecting packets
+When using fake authentication, we tell the access point we’re ready to prove we know the WEP key
+
+root@kali:~# aireplay-ng -1 0 -e linksys -a 00:23:69:F5:B4:2B -h 00:C0:CA:1B:69:AA mon0
+
+-1 tells Aireplay-ng to fake authentication. 
+• 0 is the retransmission time. 
+• -e is the SSID; in my case linksys. 
+• -a is the MAC address of the access point we want to authenticate with.
+ • -h is the MAC address of our card (which should be on a sticker on the device). 
+• mon0 is the interface to use for the fake authentication.

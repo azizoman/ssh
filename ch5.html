@@ -1,0 +1,127 @@
+
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Keynote</title>
+
+Netcraft is a website analyzing server, with the help of this website we find basic and important information on the website like:-
+
+the information that web servers and web-hosting companies gather and make publicly available can tell you a lot about a website
+which operating system it uses
+in which web server it runs
+how much a website is secure
+the scripted language that website used
+in which technology a website works
+hosting providers
+ISPs
+encrypted transactions
+uptime information and much more.
+--------------------------------------------------------------------------------------------------------------------
+Whois lookup	
+All domain registrars keep records of the domains they host. These records contain information about the owner, including contact information
+root@kali:~# whois bulbsecurity.com
+--------------------------------------------------------------------------------------------------------------------
+DNS
+We can also use Domain Name System (DNS) servers to learn more about a domain. DNS servers translate the human-readable URL www.bulbsecurity.com into an IP address.
+root@Kali:~# nslookup www.bulbsecurity.com
+---------------------------------------------------------------------------------------------------------------------
+Searching e-mail address
+#way to find usernames is by looking for email addresses on the Internet.
+#use a Python tool called theHarvester to quickly scour thousands of search engine results for possible email addresses.
+
+theHarvester -d bulbsecurity.com -l 500 -b all
+
+-d domain, -l limit, -b source
+--------------------------------------------------------------------------------------------------------------------
+#Collects information about a target network to identify various ways to intrude into the system
+#Passive : Gathering information about the target without direct interaction
+#Active: Gathering information about the target with direct interaction
+--------------------------------------------------------------------------------------------------------------------
+Tools Name                  |               Objective                                                              |
+--------------------------------------------------------------------------------------------------------------------
+Google keywords             |      Gather information using advanced Google techniques                             |
+--------------------------------------------------------------------------------------------------------------------
+People Search Online        |                                                                                      |
+www.intelius.com            |                                                                                      |
+--------------------------------------------------------------------------------------------------------------------
+Netcraft / peekyou          |                                                                                      |
+www.peekyou.com             |  Find the company’s domains and sub-domains details                                  |
+www.netcraft.com            |                                                                                      |
+--------------------------------------------------------------------------------------------------------------------
+theHarvester                |   To find employees of the target company along with their job titles                |
+--------------------------------------------------------------------------------------------------------------------
+ censys.io                  |   Gather target OS information through passive footprinting                          |
+--------------------------------------------------------------------------------------------------------------------
+Ping                        |  Assists in obtaining domain information and the IP address of the target website.   |
+--------------------------------------------------------------------------------------------------------------------
+website.informer.com        |Gather Information about a Target Website about a website’s traffic rank, daily       |
+                            | visitors rate, page views, etc.                                                      |                                                                                    |
+--------------------------------------------------------------------------------------------------------------------
+whois.domaintools.com       |  Collect data related to registration details, name servers, IP address, location    |
+--------------------------------------------------------------------------------------------------------------------
+Nslookup                    |  Obtain the IP Address of the Target Domain                                          |
+--------------------------------------------------------------------------------------------------------------------
+www.yougetsignal.com        |  Reverse DNS Lookup using Reverse IP Domain Check                                    |
+--------------------------------------------------------------------------------------------------------------------
+www.arin.net                |network range along with the other information such as network type, registration     |
+                            | information,                                                                         |                                                                                    |
+--------------------------------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Port scanning
+# mapping the network range and querying systems for listening ports. We can do this manually by connecting to ports with a tool such as telnet or Netcat and recording the results. 
+# Let’s use Netcat to connect to the Windows XP machine on port 25, the default port for the Simple Mail Transfer Protocol (SMTP).
+# Netcat can be used to make arbitrary connections to network services. As a result, it can be used to make HTTP requests to a web-server much like a web-browser would. Let’s go ahead and grab the index page from google.com. Enter the nc command followed by the host and the port you want to connect to.
+root@kali:~# nc 192.168.0.110 25
+root@kali:~#nc google.com 80
+--------------------------------------------------------------------------------------------------------------------
+Port Scanning
+# Firewalls with intrusion-detection and prevention systems have made great strides in detecting and blocking scan traffic.
+# so you might run an Nmap scan and receive no results at all. Though you could be hired to perform an external pentest against a network range with no live hosts,
+ it’s more likely that you’re being blocked by a firewall. 
+
+# On the other hand, your Nmap results might instead say that every host is alive, and will be listening on every port if your scan is detected.
+--------------------------------------------------------------------------------------------------------------------
+Tcp Syn scan
+# In a SYN scan, Nmap sends the SYN and waits for the SYN-ACK if the port is open but never sends the ACK to complete the connection. 
+# If the SYN packet receives no SYN-ACK response, the port is not available; either it’s closed or the connection is being filtered. This way, Nmap finds out 
+if a port is open without ever fully connecting to the target machine. 
+
+#The syntax for a SYN scan is the -sS flag.
+--------------------------------------------------------------------------------------------------------------------
+UDP Scan
+
+In a UDP scan (-sU), Nmap sends a UDP packet to a port. Depending on the port, the packet sent is protocol specific. 
+If it receives a response, the port is considered open. If the port is closed, Nmap will receive an ICMP Port Unreachable message. 
+
+If Nmap receives no response whatsoever, then either the port is open and the program listening does not respond to Nmap’s query, or the traffic is being filtered
+--------------------------------------------------------------------------------------------------------------------
+Nessus vulnerability scanner
+#Nessus is one of the most widely used commercial vulnerability scanners
+#Nessus is available as a paid professional version that pentesters and inhouse security teams can use to scan networks for vulnerabilities. 
+#You can use the free, noncommercial version called Nessus Home
+
+root@kali:~# service nessusd start
+Now open a web browser, and access Nessus by directing the Iceweasel
+browser to https://kali:8834.
+
+--------------------------------------------------------------------------------------------------------------------
+Install nessus
+1. Open Applications->Web Browser and enter
+http://www.tenable.com/products/nessus-home/ in the address bar. Complete the Register for an Activation Code information and click Register.
+(Use a real email address—you’ll need the activation code later.)
+2. Once you reach the Downloads page, choose the latest version of Nessus for the Linux Debian 32-bit platform (Nessus-5.2.5-debian6_i386.deb and download it to 
+your root directory (the default download location).
+3. Open a Linux terminal (click the terminal icon at the top of the Kali
+screen) to open a root prompt.
+4. Enter ls to see a list of the files in your root directory. You should see the Nessus file that you just downloaded.
+
+5. Enter dpkg -i followed by the name of the file you downloaded (you can
+type the first letter of the filename and press tab to use tab completion) and press enter to begin the install process. Installation may take a while as Nessus 
+processes various plugins. Progress is shown by a line of hash symbols (#).
+
+root@kali:~# /etc/init.d/nessusd start
+
+
+--------------------------------------------------------------------------------------------------------------------

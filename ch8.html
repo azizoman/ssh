@@ -1,0 +1,80 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Keynote</title>
+
+Password management
+Companies are waking up to the inherent risks of password-based authentication; brute-force attacks and educated guesses are both serious risks to weak passwords.
+ Many organizations use biometric (fingerprint or retinal scan-based) or two-factor authentication to mitigate these risks. 
+
+Even web services such as Gmail and Dropbox offer two-factor authentication in which the user provides a password as well as a second value, such as the digits on 
+an electronic token. If two-factor authentication is not available, using strong passwords is imperative for account security because all that stands between the attacker 
+and sensitive data may come down to a simple string. 
+Strong passwords are long, use characters from multiple complexity classes, and are not based on a dictionary word.
+--------------------------------------------------------------------------------------------------------------------------------------------
+Password attack
+Tools designed for automating online password attacks or guessing passwords until the server responds with a successful login. These tools use a technique called brute forcing. 
+Tools that use brute forcing try every possible username and password combination, and given enough time, they will find valid credentials.
+--------------------------------------------------------------------------------------------------------------------------------------------
+Preparing wordlists
+If you don’t know the name of the user account you want to crack, or you just want to crack as many accounts as possible, you can provide a username list for the password-guessing tool 
+to iterate through.
+--------------------------------------------------------------------------------------------------------------------------------------------
+User Lists
+When creating a user list, first try to determine the client’s username scheme. For instance, if we’re trying to break into employee email accounts, figure out the pattern 
+the email addresses follow. Are they firstname.lastname, just a first name, or something else?
+# You can look for good username candidates on lists of common first or last names.
+Create a file userlist.txt and enter the username of all hostmachine
+root@kali:~# cat userlist.txt
+georgia
+john
+mom
+james
+--------------------------------------------------------------------------------------------------------------------------------------------
+Cewl tool
+#a tool like the ceWL custom wordlist generator will search a company website for words to add to your wordlist
+
+root@kali:~# cewl -w bulbwords.txt -d 1 -m 5 www.bulbsecurity.com 
+
+# The command ceWL --help lists ceWL’s usage instructions. Use the -d (depth) option u to specify how many links ceWL should follow on the target website.
+#specify a minimum word length to match with the -m option v. Once you’ve made your choices, output ceWL’s results to a file with the -w option w. For example, 
+to search www.bulbsecurity.com to depth 1 with minimum word length of 5 characters and output the words found to the file bulbwords.txt, you would use the command shown at x.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Crunch
+# Another method for creating wordlists is producing a list of every possible combination of a given set of characters, or a list of every combination of characters for a specified 
+number of characters. The tool Crunch in Kali will generate these character sets for you. 
+
+root@kali:~# crunch 7 7 AB 
+
+# Crunch will now generate the following number of lines: 128 AAAAAAA, list of all the possible seven-character combinations of just the characters A and B with 7 character length
+--------------------------------------------------------------------------------------------------------------------------------------------
+Guessing Usernames and Passwords with Hydra
+# Hydra is an online password-guessing tool that can be used to test usernames and passwords for running services.
+
+root@kali:~# hydra -L userlist.txt -P passwordfile.txt 192.168.20.10 pop3
+Hydra to guess usernames and passwords by running through our username and password files to search for valid POP3 credentials on our Windows XP target
+
+# This command uses the –L flag to specify the username file, the -P for the password list file, and specifies the protocol pop3
+#Specific password for particular username then use this command
+root@kali:~# hydra -l georgia -P passwordfile.txt 192.168.20.10 pop3
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+Offline Password Attacks
+Another way to crack passwords (without being discovered) is to get a copy of the password hashes and attempt to reverse them back to plaintext passwords. 
+This is easier said than done because hashes are designed to be the product of a one-way hash function: Given an input, you can calculate the output using the hash function.
+--------------------------------------------------------------------------------------------------------------------------------------------
+John the Ripper
+# One of the more popular tools for cracking passwords is John the Ripper. The default mode for John the Ripper is brute forcing. Because the set of possible plaintext passwords 
+in LM hash is so limited, brute forcing is a viable method for cracking any LM hash in a reasonable amount of time, even with our Kali virtual machine, which has limited CPU power 
+and memory.
+# For example, if we save the Windows XP hashes we gathered earlier in this chapter to a file called xphashes.txt, then feed them to John the Ripper like this, we find that 
+John the Ripper can run through the entire set of possible passwords and come up with the correct answer
+root@kali: john xphashes.txt
+--------------------------------------------------------------------------------------------------------------------------------------------
+Cracking Linux Passwords
+root@kali# john linuxpasswords.txt --wordlist=passwordfile.txt
+Loaded 1 password hash (FreeBSD MD5 [128/128 SSE2 intrinsics 4x])
+password (georgia)
+guesses: 1 time: 0:00:00:00 DONE (Sun Jan 11 05:05:31 2015) c/s: 100
+trying: password - Password123

